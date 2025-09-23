@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/bb-clock/sw.js', { scope: '/bb-clock/' })})}
