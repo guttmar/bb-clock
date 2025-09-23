@@ -18,14 +18,14 @@ const NavBar: React.FC<NavBarProps> = ({ onPlayPause, onReset, onSettings }) => 
     };
 
     return (
-        <nav className="w-full flex justify-between gap-4 p-4 bg-gray-600">
-            <button className="px-4 py-2 text-base w-24 rounded border border-gray-300 bg-[#4c4040ff] cursor-pointer" onClick={onReset}>
+        <nav className="w-full flex justify-between gap-4 p-4 bg-gray-700">
+            <button className="px-4 py-2 text-base w-24 rounded" onClick={onReset}>
                 Reset
             </button>
-            <button className="px-4 py-2 text-base w-24 rounded border border-gray-300 bg-[#4c4040ff] cursor-pointer" onClick={handlePlayPause}>
+            <button className="px-4 py-2 text-base w-24 rounded" onClick={handlePlayPause}>
                 {isPlaying ? 'Pause' : 'Play'}
             </button>
-            <button className="px-4 py-2 text-base w-24 rounded border border-gray-300 bg-[#4c4040ff] cursor-pointer" onClick={onSettings}>
+            <button className="px-4 py-2 text-base w-24 rounded" onClick={onSettings}>
                 Settings
             </button>
         </nav>
