@@ -17,6 +17,7 @@ function App() {
         </a>
       </div>
       <h1 className="text-3xl font-bold">Blood Bowl Clock</h1>
+      <h2 className="text-3xl font-bold">This is a PWA app now!</h2>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
