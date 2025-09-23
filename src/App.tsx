@@ -2,33 +2,22 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import NavBar from './components/NavBar'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
-      <div className="flex items-center gap-4 justify-center">
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo w-[120px] h-[120px]" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react w-[120px] h-[120px]" alt="React logo" />
-        </a>
+      <div className="flex flex-col justify-center h-full w-full">
+        <div className="flex justify-center items-center w-full">
+          <p>Top</p>
+        </div>
+        <NavBar />
+        <div className="flex justify-center items-center w-full">
+          <p>Bottom</p>
+        </div>
       </div>
-      <h1 className="text-3xl font-bold">Blood Bowl Clock</h1>
-      <h2 className="text-3xl font-bold">This is a PWA app now!</h2>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }
