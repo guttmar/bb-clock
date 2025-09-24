@@ -13,8 +13,8 @@ function App() {
     setIsPlaying(false);
   }
 
-  const handlePlayPause = (nextPlayingState: boolean) => {
-    setIsPlaying(nextPlayingState);
+  const handlePlayPause = () => {
+    setIsPlaying(!isPlaying);
     setReset(false);
   }
 
@@ -42,7 +42,7 @@ function App() {
     <>
       <div className="flex flex-col justify-center h-full w-full">
         <PlayerClock active={isPlayerOne && isPlaying} reset={reset} flipped={true} onClick={handlePlayerOneClick}/>
-        <NavBar onPlayPause={handlePlayPause} onReset={handleReset}/>
+        <NavBar isPlaying={isPlaying} onPlayPause={handlePlayPause} onReset={handleReset}/>
         <PlayerClock active={!isPlayerOne && isPlaying} reset={reset} onClick={handlePlayerTwoClick} />
       </div>
     </>

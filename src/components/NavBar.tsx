@@ -1,20 +1,13 @@
-import React, { useState } from 'react';
-
 interface NavBarProps {
-    onPlayPause?: (isPlaying: boolean) => void;
+    isPlaying: boolean;
+    onPlayPause?: () => void;
     onReset?: () => void;
     onSettings?: () => void;
 }
 
-const NavBar: React.FC<NavBarProps> = ({ onPlayPause, onReset, onSettings }) => {
-    const [isPlaying, setIsPlaying] = useState(false);
-
+const NavBar: React.FC<NavBarProps> = ({ isPlaying, onPlayPause, onReset, onSettings }) => {
     const handlePlayPause = () => {
-        setIsPlaying((prev) => {
-            const next = !prev;
-            onPlayPause?.(next);
-            return next;
-        });
+        onPlayPause?.();
     };
 
     return (
