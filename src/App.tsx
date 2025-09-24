@@ -32,6 +32,10 @@ function App() {
     if (!isPlayerOne) {
       setIsPlayerOne(true);
     }
+
+     if (!isPlaying) {
+      setIsPlaying(true);
+    }
   }
 
   return (
