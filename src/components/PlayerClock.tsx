@@ -4,6 +4,7 @@ interface PlayerClockProps {
     active: boolean;
     flipped?: boolean;
     children?: React.ReactNode;
+    onClick?: () => void;
 }
 
 const activeStyle: React.CSSProperties = {
@@ -26,7 +27,7 @@ const inactiveStyle: React.CSSProperties = {
     background: '#444444ff',
 };
 
-const PlayerClock: React.FC<PlayerClockProps & { reset: boolean }> = ({ active, reset, flipped }) => {
+const PlayerClock: React.FC<PlayerClockProps & { reset: boolean }> = ({ active, reset, flipped, onClick }) => {
     const [milliSeconds, setMilliSeconds] = React.useState(0);
     const intervalRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -55,14 +56,14 @@ const PlayerClock: React.FC<PlayerClockProps & { reset: boolean }> = ({ active, 
     }, [reset]);
 
     return (
-        <div
+        <button onClick={ onClick }
             style={{
             ...(active ? activeStyle : inactiveStyle),
             ...(flipped ? { transform: 'rotate(180deg)' } : {}),
             }}
         >
             {(milliSeconds / 1000).toFixed(1)}s
-        </div>
+        </button>
     );
 };
 
