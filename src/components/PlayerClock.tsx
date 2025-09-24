@@ -5,6 +5,8 @@ interface PlayerClockProps {
     flipped?: boolean;
     children?: React.ReactNode;
     onClick?: () => void;
+    turnTime: number;
+    poolTime: number;
 }
 
 const activeStyle: React.CSSProperties = {
@@ -27,19 +29,29 @@ const inactiveStyle: React.CSSProperties = {
     background: '#444444ff',
 };
 
-const PlayerClock: React.FC<PlayerClockProps & { reset: boolean }> = ({ active, reset, flipped, onClick }) => {
-    const [milliSeconds, setMilliSeconds] = React.useState(0);
+const PlayerClock: React.FC<PlayerClockProps & { reset: boolean }> = ({ active, reset, flipped, onClick, turnTime, poolTime }) => {
+    const [displayTimeMs, setDisplayTimeMs] = React.useState(turnTime);
+    const [displayPoolTimeMs, setDisplayPoolTimeMs] = React.useState(poolTime);
     const intervalRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
 
     // Start/stop timer based on active
     React.useEffect(() => {
         if (active) {
-            const startTime = Date.now() - milliSeconds;
+            const startTime = Date.now();
             intervalRef.current = setInterval(() => {
                 const elapsed = Math.floor(Date.now() - startTime);
-                setMilliSeconds(elapsed);
+
+                const displayTime = turnTime - elapsed;
+                setDisplayTimeMs(displayTime > 0 ? displayTime : 0);
+
+                if (displayTime <= 0) {
+                    const poolElapsed = elapsed - turnTime;
+                    const displayPoolTime = displayPoolTimeMs - poolElapsed;
+                    setDisplayPoolTimeMs(displayPoolTime > 0 ? displayPoolTime : 0);
+                }
             }, 100);
         } else if (intervalRef.current) {
+            setDisplayTimeMs(turnTime);
             clearInterval(intervalRef.current);
             intervalRef.current = null;
         }
@@ -52,7 +64,8 @@ const PlayerClock: React.FC<PlayerClockProps & { reset: boolean }> = ({ active, 
 
     // Reset timer when reset prop changes
     React.useEffect(() => {
-        setMilliSeconds(0);
+        setDisplayTimeMs(turnTime);
+        setDisplayPoolTimeMs(poolTime);
     }, [reset]);
 
     return (
@@ -62,7 +75,9 @@ const PlayerClock: React.FC<PlayerClockProps & { reset: boolean }> = ({ active, 
             ...(flipped ? { transform: 'rotate(180deg)' } : {}),
             }}
         >
-            {(milliSeconds / 1000).toFixed(1)}s
+            {(displayTimeMs / 1000).toFixed(1)}s
+            <br />
+            ({(displayPoolTimeMs / 1000).toFixed(1)}s)
         </button>
     );
 };
