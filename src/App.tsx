@@ -1,58 +1,21 @@
-import React from 'react';
-import './App.css'
-import NavBar from './components/NavBar'
-import PlayerClock from './components/PlayerClock'
-import useWakeLock from './hooks/useWakeLock';
+import { useState } from 'react';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import ClockPage from './pages/ClockPage';
+import SettingsPage from './pages/SettingsPage';
 
-function App() {
-  const [turnTime] = React.useState(4 * 1000); // 4 seconds for testing
-  const [poolTime] = React.useState(10 * 1000); // 10 seconds for testing
-
-  const [isPlaying, setIsPlaying] = React.useState(false);
-  const [reset, setReset] = React.useState(false);
-  const [isPlayerOne, setIsPlayerOne] = React.useState(true);
-
-  useWakeLock(isPlaying);
-
-  const handleReset = () => {
-    setReset(true);
-    setIsPlaying(false);
-  }
-
-  const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
-    setReset(false);
-  }
-
-  const handlePlayerOneClick = () => {
-    if (isPlayerOne) {
-      setIsPlayerOne(false);
-    }
-
-    if (!isPlaying) {
-      setIsPlaying(true);
-    }
-  }
-
-  const handlePlayerTwoClick = () => {
-    if (!isPlayerOne) {
-      setIsPlayerOne(true);
-    }
-
-     if (!isPlaying) {
-      setIsPlaying(true);
-    }
-  }
+export default function App() {
+  const [turnTime, setTurnTime] = useState(3 * 1000);
+  const [poolTime, setPoolTime] = useState(5 * 1000);
 
   return (
-    <>
-      <div className="flex flex-col justify-center h-full w-full">
-        <PlayerClock active={isPlayerOne && isPlaying} reset={reset} flipped={true} onClick={handlePlayerOneClick} turnTime={turnTime} poolTime={poolTime}/>
-        <NavBar isPlaying={isPlaying} onPlayPause={handlePlayPause} onReset={handleReset}/>
-        <PlayerClock active={!isPlayerOne && isPlaying} reset={reset} onClick={handlePlayerTwoClick} turnTime={turnTime} poolTime={poolTime}/>
-      </div>
-    </>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<ClockPage turnTime={turnTime} poolTime={poolTime} />} />
+        <Route
+          path="/settings"
+          element={<SettingsPage turnTime={turnTime} setTurnTime={setTurnTime} poolTime={poolTime} setPoolTime={setPoolTime} />}
+        />
+      </Routes>
+    </Router>
+  );
 }
-
-export default App
