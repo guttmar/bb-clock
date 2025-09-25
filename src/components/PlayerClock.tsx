@@ -32,26 +32,31 @@ const inactiveStyle: React.CSSProperties = {
 const PlayerClock: React.FC<PlayerClockProps & { reset: boolean }> = ({ active, reset, flipped, onClick, turnTime, poolTime }) => {
     const [displayTimeMs, setDisplayTimeMs] = React.useState(turnTime);
     const [displayPoolTimeMs, setDisplayPoolTimeMs] = React.useState(poolTime);
+
     const intervalRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
+    const lastTickRef = React.useRef<number | null>(null);
 
     // Start/stop timer based on active
     React.useEffect(() => {
-        if (active) {
-            const startTime = Date.now();
+        if (active && !intervalRef.current) {
+            lastTickRef.current = Date.now();
             intervalRef.current = setInterval(() => {
-                const elapsed = Math.floor(Date.now() - startTime);
+                if (!lastTickRef.current) return;
+                const now = Date.now();
+                const delta = Math.floor(now - lastTickRef.current);
+                lastTickRef.current = now;
 
-                const displayTime = turnTime - elapsed;
-                setDisplayTimeMs(displayTime > 0 ? displayTime : 0);
-
-                if (displayTime <= 0) {
-                    const poolElapsed = elapsed - turnTime;
-                    const displayPoolTime = displayPoolTimeMs - poolElapsed;
-                    setDisplayPoolTimeMs(displayPoolTime > 0 ? displayPoolTime : 0);
-                }
+                setDisplayTimeMs(prev => {
+                    if (prev > 0) {
+                        return Math.max(prev - delta, 0);
+                    } else {
+                        // turn time expired → burn from pool time
+                        setDisplayPoolTimeMs(poolPrev => Math.max(poolPrev - delta, 0));
+                        return 0;
+                    }
+                });
             }, 100);
         } else if (intervalRef.current) {
-            setDisplayTimeMs(turnTime);
             clearInterval(intervalRef.current);
             intervalRef.current = null;
         }
@@ -68,8 +73,14 @@ const PlayerClock: React.FC<PlayerClockProps & { reset: boolean }> = ({ active, 
         setDisplayPoolTimeMs(poolTime);
     }, [reset]);
 
+    const handlePlayerOneClick = () => {
+        setDisplayTimeMs(turnTime);
+        lastTickRef.current = Date.now();
+        onClick?.();
+    }
+
     return (
-        <button onClick={ onClick }
+        <button onClick={ handlePlayerOneClick }
             style={{
             ...(active ? activeStyle : inactiveStyle),
             ...(flipped ? { transform: 'rotate(180deg)' } : {}),
