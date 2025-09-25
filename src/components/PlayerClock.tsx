@@ -1,118 +1,127 @@
 import React from 'react';
+import styled, { css } from 'styled-components';
 
 interface PlayerClockProps {
-    active: boolean;
-    flipped?: boolean;
-    children?: React.ReactNode;
-    onClick?: () => void;
-    turnTime: number;
-    poolTime: number;
+  active: boolean;
+  flipped?: boolean;
+  onClick?: () => void;
+  turnTime: number;
+  poolTime: number;
+  reset?: boolean;
 }
 
-const activeStyle: React.CSSProperties = {
-    background: 'green',
-    color: 'white',
-    padding: '32px 64px',
-    textAlign: 'center',
-    fontSize: '2rem',
-    margin: '0 auto',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    height: '100%',
-    boxSizing: 'border-box',
-};
+const ClockButton = styled.button<{ active: boolean; flipped?: boolean }>`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 50%;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  transition: background 0.3s;
 
-const inactiveStyle: React.CSSProperties = {
-    ...activeStyle,
-    background: '#444444ff',
-};
+  ${(props) =>
+    props.active
+      ? css`
+          background: #22c55e;
+          color: #fff;
+        `
+      : css`
+          background: #4b5563;
+          color: #e5e7eb;
+        `}
 
-function formatTime(ms: number) {
-  const totalSeconds = Math.floor(ms / 1000);
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-  const tenths = Math.floor((ms % 1000) / 100);
+  ${(props) =>
+    props.flipped &&
+    css`
+      transform: rotate(180deg);
+    `}
 
-  const sStr = seconds.toString();
-  const tStr = tenths.toString();
+  font-size: 2.5rem;
+  text-align: center;
+`;
 
-  if (hours > 0) {
-    const hStr = hours.toString();
-    const mStr = minutes.toString();
-    return `${hStr}:${mStr}:${sStr}.${tStr}`;
-  } else if (minutes > 0) {
-    const mStr = minutes.toString();
-    return `${mStr}:${sStr}.${tStr}`;
-  } else {
-    return `${sStr}.${tStr}`;
-  }
-}
+const PoolTime = styled.span`
+  font-size: 1rem;
+  opacity: 0.7;
+`;
 
-const PlayerClock: React.FC<PlayerClockProps & { reset: boolean }> = ({ active, reset, flipped, onClick, turnTime, poolTime }) => {
-    const [displayTimeMs, setDisplayTimeMs] = React.useState(turnTime);
-    const [displayPoolTimeMs, setDisplayPoolTimeMs] = React.useState(poolTime);
+export default function PlayerClock({
+  active,
+  flipped,
+  onClick,
+  turnTime,
+  poolTime,
+  reset,
+}: PlayerClockProps) {
+  const [displayTimeMs, setDisplayTimeMs] = React.useState(turnTime);
+  const [displayPoolMs, setDisplayPoolMs] = React.useState(poolTime);
 
-    const intervalRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
-    const lastTickRef = React.useRef<number | null>(null);
+  const intervalRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
+  const lastTickRef = React.useRef<number | null>(null);
 
-    // Start/stop timer based on active
-    React.useEffect(() => {
-        if (active && !intervalRef.current) {
-            lastTickRef.current = Date.now();
-            intervalRef.current = setInterval(() => {
-                if (!lastTickRef.current) return;
-                const now = Date.now();
-                const delta = Math.floor(now - lastTickRef.current);
-                lastTickRef.current = now;
+  // Start/stop timer
+  React.useEffect(() => {
+    if (active && !intervalRef.current) {
+      lastTickRef.current = Date.now();
+      intervalRef.current = setInterval(() => {
+        if (!lastTickRef.current) return;
+        const now = Date.now();
+        const delta = now - lastTickRef.current;
+        lastTickRef.current = now;
 
-                setDisplayTimeMs(prev => {
-                    if (prev > 0) {
-                        return Math.max(prev - delta, 0);
-                    } else {
-                        // turn time expired → burn from pool time
-                        setDisplayPoolTimeMs(poolPrev => Math.max(poolPrev - delta, 0));
-                        return 0;
-                    }
-                });
-            }, 100);
-        } else if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-            intervalRef.current = null;
-        }
-        return () => {
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-            }
-        };
-    }, [active]);
-
-    // Reset timer when reset prop changes
-    React.useEffect(() => {
-        setDisplayTimeMs(turnTime);
-        setDisplayPoolTimeMs(poolTime);
-    }, [reset, turnTime, poolTime]);
-
-    const handlePlayerOneClick = () => {
-        setDisplayTimeMs(turnTime);
-        lastTickRef.current = Date.now();
-        onClick?.();
+        setDisplayTimeMs((prev) => {
+          if (prev > 0) return Math.max(prev - delta, 0);
+          setDisplayPoolMs((poolPrev) => Math.max(poolPrev - delta, 0));
+          return 0;
+        });
+      }, 100);
+    } else if (!active && intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
     }
 
-    return (
-        <button onClick={ handlePlayerOneClick }
-            style={{
-            ...(active ? activeStyle : inactiveStyle),
-            ...(flipped ? { transform: 'rotate(180deg)' } : {}),
-            }}
-        >
-            {formatTime(displayTimeMs)}
-            <br />
-            ({formatTime(displayPoolTimeMs)})
-        </button>
-    );
-};
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [active]);
 
-export default PlayerClock;
+  // Reset timer
+  React.useEffect(() => {
+    setDisplayTimeMs(turnTime);
+    setDisplayPoolMs(poolTime);
+  }, [reset, turnTime, poolTime]);
+
+  const handleClick = () => {
+    setDisplayTimeMs(turnTime);
+    lastTickRef.current = Date.now();
+    onClick?.();
+  };
+
+  const formatTime = (ms: number) => {
+    const totalSeconds = Math.floor(ms / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    const tenths = Math.floor((ms % 1000) / 100);
+
+    let parts: string[] = [];
+    if (hours > 0) parts.push(hours.toString().padStart(2, '0'));
+    if (hours > 0 || minutes > 0) parts.push(minutes.toString().padStart(2, '0'));
+    parts.push(seconds.toString() + '.' + tenths);
+
+    return parts.join(':');
+  };
+
+  return (
+    <ClockButton active={active} flipped={flipped} onClick={handleClick}>
+      {formatTime(displayTimeMs)}
+      <PoolTime>({formatTime(displayPoolMs)})</PoolTime>
+    </ClockButton>
+  );
+}
