@@ -71,7 +71,7 @@ const PlayerClock: React.FC<PlayerClockProps & { reset: boolean }> = ({ active, 
     React.useEffect(() => {
         setDisplayTimeMs(turnTime);
         setDisplayPoolTimeMs(poolTime);
-    }, [reset]);
+    }, [reset, turnTime, poolTime]);
 
     const handlePlayerOneClick = () => {
         setDisplayTimeMs(turnTime);
