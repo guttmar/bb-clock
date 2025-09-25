@@ -1,4 +1,5 @@
 import React from 'react';
+import poolStartSoundFile from '../assets/water.wav';
 import styled, { css } from 'styled-components';
 
 interface PlayerClockProps {
@@ -59,11 +60,31 @@ export default function PlayerClock({
   poolTime,
   reset,
 }: PlayerClockProps) {
-  const [displayTimeMs, setDisplayTimeMs] = React.useState(turnTime);
+  const [displayTurnMs, setDisplayTurnMs] = React.useState(turnTime);
   const [displayPoolMs, setDisplayPoolMs] = React.useState(poolTime);
 
   const intervalRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
   const lastTickRef = React.useRef<number | null>(null);
+
+  const poolStartedRef = React.useRef(false); // track if pool timer already started
+  const audioRef = React.useRef<HTMLAudioElement | null>(null);
+
+  React.useEffect(() => {
+    audioRef.current = new Audio(poolStartSoundFile);
+  }, []);
+
+  React.useEffect(() => {
+    if (displayTurnMs <= 0 && displayPoolMs > 0 && !poolStartedRef.current) {
+      poolStartedRef.current = true;
+      audioRef.current?.play().catch(console.warn);
+    }
+  }, [displayTurnMs, displayPoolMs]);
+
+  React.useEffect(() => {
+    setDisplayTurnMs(turnTime);
+    setDisplayPoolMs(poolTime);
+    poolStartedRef.current = false; // reset sound trigger
+  }, [reset, turnTime, poolTime]);
 
   // Start/stop timer
   React.useEffect(() => {
@@ -75,7 +96,7 @@ export default function PlayerClock({
         const delta = now - lastTickRef.current;
         lastTickRef.current = now;
 
-        setDisplayTimeMs((prev) => {
+        setDisplayTurnMs((prev) => {
           if (prev > 0) return Math.max(prev - delta, 0);
           setDisplayPoolMs((poolPrev) => Math.max(poolPrev - delta, 0));
           return 0;
@@ -93,12 +114,12 @@ export default function PlayerClock({
 
   // Reset timer
   React.useEffect(() => {
-    setDisplayTimeMs(turnTime);
+    setDisplayTurnMs(turnTime);
     setDisplayPoolMs(poolTime);
   }, [reset, turnTime, poolTime]);
 
   const handleClick = () => {
-    setDisplayTimeMs(turnTime);
+    setDisplayTurnMs(turnTime);
     lastTickRef.current = Date.now();
     onClick?.();
   };
@@ -120,7 +141,7 @@ export default function PlayerClock({
 
   return (
     <ClockButton active={active} flipped={flipped} onClick={handleClick}>
-      {formatTime(displayTimeMs)}
+      {formatTime(displayTurnMs)}
       <PoolTime>({formatTime(displayPoolMs)})</PoolTime>
     </ClockButton>
   );
