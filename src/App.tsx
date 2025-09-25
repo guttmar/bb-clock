@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css'
 import NavBar from './components/NavBar'
 import PlayerClock from './components/PlayerClock'
+import useWakeLock from './hooks/useWakeLock';
 
 function App() {
   const [turnTime] = React.useState(4 * 1000); // 4 seconds for testing
@@ -10,6 +11,8 @@ function App() {
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [reset, setReset] = React.useState(false);
   const [isPlayerOne, setIsPlayerOne] = React.useState(true);
+
+  useWakeLock(isPlaying);
 
   const handleReset = () => {
     setReset(true);
