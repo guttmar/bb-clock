@@ -29,6 +29,28 @@ const inactiveStyle: React.CSSProperties = {
     background: '#444444ff',
 };
 
+function formatTime(ms: number) {
+  const totalSeconds = Math.floor(ms / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  const tenths = Math.floor((ms % 1000) / 100);
+
+  const sStr = seconds.toString();
+  const tStr = tenths.toString();
+
+  if (hours > 0) {
+    const hStr = hours.toString();
+    const mStr = minutes.toString();
+    return `${hStr}:${mStr}:${sStr}.${tStr}`;
+  } else if (minutes > 0) {
+    const mStr = minutes.toString();
+    return `${mStr}:${sStr}.${tStr}`;
+  } else {
+    return `${sStr}.${tStr}`;
+  }
+}
+
 const PlayerClock: React.FC<PlayerClockProps & { reset: boolean }> = ({ active, reset, flipped, onClick, turnTime, poolTime }) => {
     const [displayTimeMs, setDisplayTimeMs] = React.useState(turnTime);
     const [displayPoolTimeMs, setDisplayPoolTimeMs] = React.useState(poolTime);
@@ -86,9 +108,9 @@ const PlayerClock: React.FC<PlayerClockProps & { reset: boolean }> = ({ active, 
             ...(flipped ? { transform: 'rotate(180deg)' } : {}),
             }}
         >
-            {(displayTimeMs / 1000).toFixed(1)}s
+            {formatTime(displayTimeMs)}s
             <br />
-            ({(displayPoolTimeMs / 1000).toFixed(1)}s)
+            ({formatTime(displayPoolTimeMs)}s)
         </button>
     );
 };
