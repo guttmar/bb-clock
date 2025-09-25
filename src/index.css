@@ -1,3 +1,4 @@
+/* --- Root and global styles --- */
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -13,6 +14,16 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+body {
+  margin: 0;
+  font-family: inherit;
+  color: inherit;
+  background-color: inherit;
+  /* Remove display: flex here to avoid conflicts */
+  min-height: 100%;
+  width: 100%;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -22,28 +33,22 @@ a:hover {
   color: #535bf2;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-}
-
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
 
+/* --- Buttons --- */
+/* Remove background/padding for global buttons */
 button {
   border-radius: 8px;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
   cursor: pointer;
-  transition: border-color 0.25s;
+  font-family: inherit;
+  font-weight: 500;
+  transition: border-color 0.25s, background-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
@@ -52,6 +57,7 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* --- Light mode overrides --- */
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -65,32 +71,38 @@ button:focus-visible {
   }
 }
 
+/* --- Full screen layout --- */
 html, body, #root {
   height: 100%;
   width: 100%;
   overflow: hidden;
 }
 
+/* --- Tailwind-like utility classes for any missing ones --- */
 .flex {
   display: flex;
 }
-
 .flex-col {
   flex-direction: column;
 }
-
+.flex-row {
+  flex-direction: row;
+}
 .items-center {
   align-items: center;
 }
-
 .justify-center {
   justify-content: center;
 }
-
+.justify-start {
+  justify-content: flex-start;
+}
 .h-full {
   height: 100%;
 }
-
 .w-full {
   width: 100%;
+}
+.gap-4 {
+  gap: 1rem; /* 16px */
 }

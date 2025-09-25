@@ -1,28 +1,44 @@
+import styled from 'styled-components';
+
 interface NavBarProps {
-    isPlaying: boolean;
-    onPlayPause?: () => void;
-    onReset?: () => void;
-    onSettings?: () => void;
+  isPlaying: boolean;
+  onReset: () => void;
+  onPlayPause: () => void;
+  onSettings: () => void;
 }
 
-const NavBar: React.FC<NavBarProps> = ({ isPlaying, onPlayPause, onReset, onSettings }) => {
-    const handlePlayPause = () => {
-        onPlayPause?.();
-    };
+const Nav = styled.nav`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 10rem; /* Thick navbar */
+  background-color: #1f2937;
+  gap: 1rem;
+  padding: 0 1rem;
+`;
 
-    return (
-        <nav className="w-full flex justify-between gap-4 p-4 bg-gray-700">
-            <button className="px-4 py-2 text-base w-24 rounded" onClick={onReset}>
-                Reset
-            </button>
-            <button className="px-4 py-2 text-base w-24 rounded" onClick={handlePlayPause}>
-                {isPlaying ? 'Pause' : 'Play'}
-            </button>
-            <button className="px-4 py-2 text-base w-24 rounded" onClick={onSettings}>
-                Settings
-            </button>
-        </nav>
-    );
-};
+const NavButton = styled.button`
+  padding: 1.0rem 1.25rem;
+  border-radius: 0.5rem;
+  background-color: #374151;
+  color: #fff;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+  transition: background-color 0.2s;
 
-export default NavBar;
+  &:hover {
+    background-color: #4b5563;
+  }
+`;
+
+export default function NavBar({ isPlaying, onReset, onPlayPause, onSettings }: NavBarProps) {
+  return (
+    <Nav>
+      <NavButton onClick={onReset}>Reset</NavButton>
+      <NavButton onClick={onPlayPause}>{isPlaying ? 'Pause' : 'Play'}</NavButton>
+      <NavButton onClick={onSettings}>Settings</NavButton>
+    </Nav>
+  );
+}

@@ -108,9 +108,9 @@ const PlayerClock: React.FC<PlayerClockProps & { reset: boolean }> = ({ active, 
             ...(flipped ? { transform: 'rotate(180deg)' } : {}),
             }}
         >
-            {formatTime(displayTimeMs)}s
+            {formatTime(displayTimeMs)}
             <br />
-            ({formatTime(displayPoolTimeMs)}s)
+            ({formatTime(displayPoolTimeMs)})
         </button>
     );
 };
