@@ -1,5 +1,6 @@
 import React from 'react';
 import poolStartSoundFile from '../assets/water.wav';
+import turnoverSoundFile from '../assets/whistle.wav';
 import styled, { css } from 'styled-components';
 
 interface PlayerClockProps {
@@ -66,24 +67,37 @@ export default function PlayerClock({
   const intervalRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
   const lastTickRef = React.useRef<number | null>(null);
 
-  const audioRef = React.useRef<HTMLAudioElement | null>(null);
+  const poolAudioRef = React.useRef<HTMLAudioElement | null>(null);
+  const turnoverAudioRef = React.useRef<HTMLAudioElement | null>(null);
 
   React.useEffect(() => {
-    audioRef.current = new Audio(poolStartSoundFile);
+    poolAudioRef.current = new Audio(poolStartSoundFile);
   }, []);
 
-  const prevTurnMsRef = React.useRef<number>(turnTime);
-
   React.useEffect(() => {
-    if (
-      prevTurnMsRef.current > 0 &&
-      displayTurnMs === 0 &&
-      displayPoolMs > 0
-    ) {
-      audioRef.current?.play().catch(console.warn);
+    turnoverAudioRef.current = new Audio(turnoverSoundFile);
+  }, []);
+
+const prevTurnMsRef = React.useRef<number>(turnTime);
+const prevPoolMsRef = React.useRef<number>(poolTime);
+
+React.useEffect(() => {
+  const turnJustHitZero = prevTurnMsRef.current > 0 && displayTurnMs === 0;
+  const poolJustHitZero = prevPoolMsRef.current > 0 && displayPoolMs === 0;
+
+  if (turnJustHitZero) {
+    if (displayPoolMs > 0) {
+      poolAudioRef.current?.play().catch(console.warn);
+    } else {
+      turnoverAudioRef.current?.play().catch(console.warn);
     }
-    prevTurnMsRef.current = displayTurnMs;
-  }, [displayTurnMs, displayPoolMs]);
+  } else if (poolJustHitZero && displayTurnMs === 0) {
+    turnoverAudioRef.current?.play().catch(console.warn);
+  }
+
+  prevTurnMsRef.current = displayTurnMs;
+  prevPoolMsRef.current = displayPoolMs;
+}, [displayTurnMs, displayPoolMs]);
 
 
   React.useEffect(() => {
