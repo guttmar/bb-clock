@@ -66,24 +66,29 @@ export default function PlayerClock({
   const intervalRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
   const lastTickRef = React.useRef<number | null>(null);
 
-  const poolStartedRef = React.useRef(false); // track if pool timer already started
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
 
   React.useEffect(() => {
     audioRef.current = new Audio(poolStartSoundFile);
   }, []);
 
+  const prevTurnMsRef = React.useRef<number>(turnTime);
+
   React.useEffect(() => {
-    if (displayTurnMs <= 0 && displayPoolMs > 0 && !poolStartedRef.current) {
-      poolStartedRef.current = true;
+    if (
+      prevTurnMsRef.current > 0 &&
+      displayTurnMs === 0 &&
+      displayPoolMs > 0
+    ) {
       audioRef.current?.play().catch(console.warn);
     }
+    prevTurnMsRef.current = displayTurnMs;
   }, [displayTurnMs, displayPoolMs]);
+
 
   React.useEffect(() => {
     setDisplayTurnMs(turnTime);
     setDisplayPoolMs(poolTime);
-    poolStartedRef.current = false; // reset sound trigger
   }, [reset, turnTime, poolTime]);
 
   // Start/stop timer
