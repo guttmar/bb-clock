@@ -4,7 +4,7 @@ import ClockPage from './pages/ClockPage';
 import SettingsPage from './pages/SettingsPage';
 
 export default function App() {
-  const [turnTime, setTurnTime] = useState(4 * 60 * 1000); // 4 minutes
+  const [turnTime, setTurnTime] = useState(2 * 60 * 1000); // 2 minutes
   const [poolTime, setPoolTime] = useState(5 * 60 * 1000); // 5 minutes
 
   return (

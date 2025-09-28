@@ -1,7 +1,7 @@
 import React from 'react';
 import poolStartSoundFile from '../assets/water.wav';
 import turnoverSoundFile from '../assets/whistle.wav';
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 
 interface PlayerClockProps {
   active: boolean;
@@ -12,7 +12,24 @@ interface PlayerClockProps {
   reset?: boolean;
 }
 
-const ClockButton = styled.button<{ active: boolean; flipped?: boolean }>`
+const subtleFlash = keyframes`
+  0%, 100% { background-color: #22c55e; }
+  50% { background-color: #d1ffe2ff; }
+`;
+
+const strongFlash = keyframes`
+  0%, 100% { background-color: #22c55e; }
+  20% { background-color: #ffffffff; }
+  40% { background-color: #f59e0b; }
+  60% { background-color: #ffffffff; }
+  80% { background-color: #ef4444; }
+`;
+
+const ClockButton = styled.button<{
+  active: boolean;
+  flipped?: boolean;
+  animationType?: 'subtle' | 'strong' | null;
+}>`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -42,6 +59,18 @@ const ClockButton = styled.button<{ active: boolean; flipped?: boolean }>`
     props.flipped &&
     css`
       transform: rotate(180deg);
+    `}
+
+  ${(props) =>
+    props.animationType === 'subtle' &&
+    css`
+      animation: ${subtleFlash} 0.8s ease;
+    `}
+    
+  ${(props) =>
+    props.animationType === 'strong' &&
+    css`
+      animation: ${strongFlash} 1.2s ease;
     `}
 
   font-size: 2.5rem;
@@ -87,18 +116,17 @@ React.useEffect(() => {
 
   if (turnJustHitZero) {
     if (displayPoolMs > 0) {
-      poolAudioRef.current?.play().catch(console.warn);
+      signalPool();
     } else {
-      turnoverAudioRef.current?.play().catch(console.warn);
+      signalTurnover();
     }
   } else if (poolJustHitZero && displayTurnMs === 0) {
-    turnoverAudioRef.current?.play().catch(console.warn);
+    signalTurnover();
   }
 
   prevTurnMsRef.current = displayTurnMs;
   prevPoolMsRef.current = displayPoolMs;
 }, [displayTurnMs, displayPoolMs]);
-
 
   React.useEffect(() => {
     setDisplayTurnMs(turnTime);
@@ -158,8 +186,32 @@ React.useEffect(() => {
     return parts.join(':');
   };
 
+  const [animationType, setAnimationType] = React.useState<'subtle' | 'strong' | null>(null);
+
+  function triggerAnimation(type: 'subtle' | 'strong') {
+    setAnimationType(type);
+    setTimeout(() => setAnimationType(null), 1200); // reset after animation
+  }
+
+  function signalPool() {
+    poolAudioRef.current?.play().catch(console.warn);
+    navigator.vibrate?.(100);
+    triggerAnimation('subtle');
+  }
+
+  function signalTurnover() {
+    turnoverAudioRef.current?.play().catch(console.warn);
+    navigator.vibrate?.([100, 50, 100, 50, 100]);
+    triggerAnimation('strong');
+  }
+
   return (
-    <ClockButton active={active} flipped={flipped} onClick={handleClick}>
+    <ClockButton
+      active={active}
+      flipped={flipped}
+      onClick={handleClick}
+      animationType={animationType}
+    >
       {formatTime(displayTurnMs)}
       <PoolTime>({formatTime(displayPoolMs)})</PoolTime>
     </ClockButton>
