@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 interface NavBarProps {
   isPlaying: boolean;
@@ -18,14 +18,14 @@ const Nav = styled.nav`
 `;
 
 const NavButton = styled.button`
-  padding: 1.0rem 1.25rem;
+  padding: 1rem 1.25rem;
   border-radius: 0.5rem;
   background-color: #374151;
   color: #fff;
   font-weight: 500;
   border: none;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
   transition: background-color 0.2s;
 
   &:hover {
@@ -33,11 +33,18 @@ const NavButton = styled.button`
   }
 `;
 
-export default function NavBar({ isPlaying, onReset, onPlayPause, onSettings }: NavBarProps) {
+export default function NavBar({
+  isPlaying,
+  onReset,
+  onPlayPause,
+  onSettings,
+}: NavBarProps) {
   return (
     <Nav>
       <NavButton onClick={onReset}>Reset</NavButton>
-      <NavButton onClick={onPlayPause}>{isPlaying ? 'Pause' : 'Play'}</NavButton>
+      <NavButton onClick={onPlayPause}>
+        {isPlaying ? "Pause" : "Play"}
+      </NavButton>
       <NavButton onClick={onSettings}>Settings</NavButton>
     </Nav>
   );

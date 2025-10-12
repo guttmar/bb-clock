@@ -1,7 +1,7 @@
-import React from 'react';
-import poolStartSoundFile from '../assets/water.wav';
-import turnoverSoundFile from '../assets/whistle.wav';
-import styled, { css, keyframes } from 'styled-components';
+import React from "react";
+import poolStartSoundFile from "../assets/water.wav";
+import turnoverSoundFile from "../assets/whistle.wav";
+import styled, { css, keyframes } from "styled-components";
 
 interface PlayerClockProps {
   active: boolean;
@@ -28,7 +28,7 @@ const strongFlash = keyframes`
 const ClockButton = styled.button<{
   active: boolean;
   flipped?: boolean;
-  animationType?: 'subtle' | 'strong' | null;
+  animationType?: "subtle" | "strong" | null;
 }>`
   display: flex;
   flex-direction: column;
@@ -36,12 +36,12 @@ const ClockButton = styled.button<{
   align-items: center;
   width: 100%;
   height: 50%;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-weight: bold;
   cursor: pointer;
   border: none;
   border-radius: 0.5rem;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   transition: background 0.3s;
 
   ${(props) =>
@@ -62,13 +62,13 @@ const ClockButton = styled.button<{
     `}
 
   ${(props) =>
-    props.animationType === 'subtle' &&
+    props.animationType === "subtle" &&
     css`
       animation: ${subtleFlash} 0.8s ease;
     `}
     
   ${(props) =>
-    props.animationType === 'strong' &&
+    props.animationType === "strong" &&
     css`
       animation: ${strongFlash} 1.2s ease;
     `}
@@ -107,26 +107,26 @@ export default function PlayerClock({
     turnoverAudioRef.current = new Audio(turnoverSoundFile);
   }, []);
 
-const prevTurnMsRef = React.useRef<number>(turnTime);
-const prevPoolMsRef = React.useRef<number>(poolTime);
+  const prevTurnMsRef = React.useRef<number>(turnTime);
+  const prevPoolMsRef = React.useRef<number>(poolTime);
 
-React.useEffect(() => {
-  const turnJustHitZero = prevTurnMsRef.current > 0 && displayTurnMs === 0;
-  const poolJustHitZero = prevPoolMsRef.current > 0 && displayPoolMs === 0;
+  React.useEffect(() => {
+    const turnJustHitZero = prevTurnMsRef.current > 0 && displayTurnMs === 0;
+    const poolJustHitZero = prevPoolMsRef.current > 0 && displayPoolMs === 0;
 
-  if (turnJustHitZero) {
-    if (displayPoolMs > 0) {
-      signalPool();
-    } else {
+    if (turnJustHitZero) {
+      if (displayPoolMs > 0) {
+        signalPool();
+      } else {
+        signalTurnover();
+      }
+    } else if (poolJustHitZero && displayTurnMs === 0) {
       signalTurnover();
     }
-  } else if (poolJustHitZero && displayTurnMs === 0) {
-    signalTurnover();
-  }
 
-  prevTurnMsRef.current = displayTurnMs;
-  prevPoolMsRef.current = displayPoolMs;
-}, [displayTurnMs, displayPoolMs]);
+    prevTurnMsRef.current = displayTurnMs;
+    prevPoolMsRef.current = displayPoolMs;
+  }, [displayTurnMs, displayPoolMs]);
 
   React.useEffect(() => {
     setDisplayTurnMs(turnTime);
@@ -179,16 +179,19 @@ React.useEffect(() => {
     const tenths = Math.floor((ms % 1000) / 100);
 
     let parts: string[] = [];
-    if (hours > 0) parts.push(hours.toString().padStart(2, '0'));
-    if (hours > 0 || minutes > 0) parts.push(minutes.toString().padStart(2, '0'));
-    parts.push(seconds.toString() + '.' + tenths);
+    if (hours > 0) parts.push(hours.toString().padStart(2, "0"));
+    if (hours > 0 || minutes > 0)
+      parts.push(minutes.toString().padStart(2, "0"));
+    parts.push(seconds.toString() + "." + tenths);
 
-    return parts.join(':');
+    return parts.join(":");
   };
 
-  const [animationType, setAnimationType] = React.useState<'subtle' | 'strong' | null>(null);
+  const [animationType, setAnimationType] = React.useState<
+    "subtle" | "strong" | null
+  >(null);
 
-  function triggerAnimation(type: 'subtle' | 'strong') {
+  function triggerAnimation(type: "subtle" | "strong") {
     setAnimationType(type);
     setTimeout(() => setAnimationType(null), 1200); // reset after animation
   }
@@ -196,13 +199,13 @@ React.useEffect(() => {
   function signalPool() {
     poolAudioRef.current?.play().catch(console.warn);
     navigator.vibrate?.(100);
-    triggerAnimation('subtle');
+    triggerAnimation("subtle");
   }
 
   function signalTurnover() {
     turnoverAudioRef.current?.play().catch(console.warn);
     navigator.vibrate?.([100, 50, 100, 50, 100]);
-    triggerAnimation('strong');
+    triggerAnimation("strong");
   }
 
   return (

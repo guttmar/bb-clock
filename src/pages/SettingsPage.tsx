@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 
 interface SettingsPageProps {
   p1TurnTime: number;
@@ -59,13 +59,13 @@ const Button = styled.button<{ bgColor?: string }>`
   cursor: pointer;
   border: none;
   color: #fff;
-  background-color: ${(props) => props.bgColor || '#555'};
-  box-shadow: 0px 2px 4px rgba(0,0,0,0.3);
+  background-color: ${(props) => props.bgColor || "#555"};
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
   transition: background-color 0.2s;
 
   &:hover {
     background-color: ${(props) =>
-      props.bgColor ? `${props.bgColor}cc` : '#666'};
+      props.bgColor ? `${props.bgColor}cc` : "#666"};
   }
 `;
 
@@ -119,52 +119,148 @@ export default function SettingsPage({
     setP1PoolTime((p1PH * 3600 + p1PM * 60 + p1PS) * 1000);
     setP2TurnTime((p2tH * 3600 + p2tM * 60 + p2tS) * 1000);
     setP2PoolTime((p2PH * 3600 + p2PM * 60 + p2PS) * 1000);
-    navigate('/');
+    navigate("/");
   };
 
   return (
     <PageContainer>
-      <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Settings</h2>
+      <h2 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>Settings</h2>
 
       <Section>
         <SectionTitle>Turn Time</SectionTitle>
         <InputRow>
-          <input type="number" value={p1tH} min={0} onFocus={e => e.target.select()} onChange={e => setP1TH(Number(e.target.value))} /> h
-          <input type="number" value={p1tM} min={0} max={59} onFocus={e => e.target.select()} onChange={e => setP1TM(Number(e.target.value))} /> m
-          <input type="number" value={p1tS} min={0} max={59}  onFocus={e => e.target.select()}onChange={e => setP1TS(Number(e.target.value))} /> s
+          <input
+            type="number"
+            value={p1tH}
+            min={0}
+            onFocus={(e) => e.target.select()}
+            onChange={(e) => setP1TH(Number(e.target.value))}
+          />{" "}
+          h
+          <input
+            type="number"
+            value={p1tM}
+            min={0}
+            max={59}
+            onFocus={(e) => e.target.select()}
+            onChange={(e) => setP1TM(Number(e.target.value))}
+          />{" "}
+          m
+          <input
+            type="number"
+            value={p1tS}
+            min={0}
+            max={59}
+            onFocus={(e) => e.target.select()}
+            onChange={(e) => setP1TS(Number(e.target.value))}
+          />{" "}
+          s
         </InputRow>
       </Section>
 
       <Section>
         <SectionTitle>Pool Time</SectionTitle>
         <InputRow>
-          <input type="number" value={p1PH} min={0} onFocus={e => e.target.select()} onChange={e => setP1PH(Number(e.target.value))} /> h
-          <input type="number" value={p1PM} min={0} max={59} onFocus={e => e.target.select()} onChange={e => setP1PM(Number(e.target.value))} /> m
-          <input type="number" value={p1PS} min={0} max={59} onFocus={e => e.target.select()} onChange={e => setP1PS(Number(e.target.value))} /> s
+          <input
+            type="number"
+            value={p1PH}
+            min={0}
+            onFocus={(e) => e.target.select()}
+            onChange={(e) => setP1PH(Number(e.target.value))}
+          />{" "}
+          h
+          <input
+            type="number"
+            value={p1PM}
+            min={0}
+            max={59}
+            onFocus={(e) => e.target.select()}
+            onChange={(e) => setP1PM(Number(e.target.value))}
+          />{" "}
+          m
+          <input
+            type="number"
+            value={p1PS}
+            min={0}
+            max={59}
+            onFocus={(e) => e.target.select()}
+            onChange={(e) => setP1PS(Number(e.target.value))}
+          />{" "}
+          s
         </InputRow>
       </Section>
 
       <Section>
         <SectionTitle>P2 Turn Time</SectionTitle>
         <InputRow>
-          <input type="number" value={p2tH} min={0} onFocus={e => e.target.select()} onChange={e => setP2TH(Number(e.target.value))} /> h
-          <input type="number" value={p2tM} min={0} max={59} onFocus={e => e.target.select()} onChange={e => setP2TM(Number(e.target.value))} /> m
-          <input type="number" value={p2tS} min={0} max={59}  onFocus={e => e.target.select()}onChange={e => setP2TS(Number(e.target.value))} /> s
+          <input
+            type="number"
+            value={p2tH}
+            min={0}
+            onFocus={(e) => e.target.select()}
+            onChange={(e) => setP2TH(Number(e.target.value))}
+          />{" "}
+          h
+          <input
+            type="number"
+            value={p2tM}
+            min={0}
+            max={59}
+            onFocus={(e) => e.target.select()}
+            onChange={(e) => setP2TM(Number(e.target.value))}
+          />{" "}
+          m
+          <input
+            type="number"
+            value={p2tS}
+            min={0}
+            max={59}
+            onFocus={(e) => e.target.select()}
+            onChange={(e) => setP2TS(Number(e.target.value))}
+          />{" "}
+          s
         </InputRow>
       </Section>
 
       <Section>
         <SectionTitle>P2 Pool Time</SectionTitle>
         <InputRow>
-          <input type="number" value={p2PH} min={0} onFocus={e => e.target.select()} onChange={e => setP2PH(Number(e.target.value))} /> h
-          <input type="number" value={p2PM} min={0} max={59} onFocus={e => e.target.select()} onChange={e => setP2PM(Number(e.target.value))} /> m
-          <input type="number" value={p2PS} min={0} max={59} onFocus={e => e.target.select()} onChange={e => setP2PS(Number(e.target.value))} /> s
+          <input
+            type="number"
+            value={p2PH}
+            min={0}
+            onFocus={(e) => e.target.select()}
+            onChange={(e) => setP2PH(Number(e.target.value))}
+          />{" "}
+          h
+          <input
+            type="number"
+            value={p2PM}
+            min={0}
+            max={59}
+            onFocus={(e) => e.target.select()}
+            onChange={(e) => setP2PM(Number(e.target.value))}
+          />{" "}
+          m
+          <input
+            type="number"
+            value={p2PS}
+            min={0}
+            max={59}
+            onFocus={(e) => e.target.select()}
+            onChange={(e) => setP2PS(Number(e.target.value))}
+          />{" "}
+          s
         </InputRow>
       </Section>
 
       <ButtonRow>
-        <Button bgColor="#22c55e" onClick={handleSave}>Save</Button>
-        <Button bgColor="#6b7280" onClick={() => navigate('/')}>Cancel</Button>
+        <Button bgColor="#22c55e" onClick={handleSave}>
+          Save
+        </Button>
+        <Button bgColor="#6b7280" onClick={() => navigate("/")}>
+          Cancel
+        </Button>
       </ButtonRow>
     </PageContainer>
   );

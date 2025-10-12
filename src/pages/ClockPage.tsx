@@ -1,8 +1,8 @@
-import React from 'react';
-import NavBar from '../components/NavBar';
-import PlayerClock from '../components/PlayerClock';
-import useWakeLock from '../hooks/useWakeLock';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import NavBar from "../components/NavBar";
+import PlayerClock from "../components/PlayerClock";
+import useWakeLock from "../hooks/useWakeLock";
+import { useNavigate } from "react-router-dom";
 
 interface ClockPageProps {
   p1TurnTime: number;
@@ -11,7 +11,12 @@ interface ClockPageProps {
   p2PoolTime: number;
 }
 
-export default function ClockPage({ p1TurnTime: p1TurnTime, p1PoolTime: p1PoolTime, p2TurnTime: p2TurnTime, p2PoolTime: p2PoolTime }: ClockPageProps) {
+export default function ClockPage({
+  p1TurnTime: p1TurnTime,
+  p1PoolTime: p1PoolTime,
+  p2TurnTime: p2TurnTime,
+  p2PoolTime: p2PoolTime,
+}: ClockPageProps) {
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [reset, setReset] = React.useState(false);
   const [isPlayerOne, setIsPlayerOne] = React.useState(true);
