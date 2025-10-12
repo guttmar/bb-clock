@@ -3,10 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 interface SettingsPageProps {
-  turnTime: number;
-  setTurnTime: (time: number) => void;
-  poolTime: number;
-  setPoolTime: (time: number) => void;
+  p1TurnTime: number;
+  setP1TurnTime: (time: number) => void;
+  p1PoolTime: number;
+  setP1PoolTime: (time: number) => void;
+  p2TurnTime: number;
+  setP2TurnTime: (time: number) => void;
+  p2PoolTime: number;
+  setP2PoolTime: (time: number) => void;
 }
 
 const PageContainer = styled.div`
@@ -66,33 +70,55 @@ const Button = styled.button<{ bgColor?: string }>`
 `;
 
 export default function SettingsPage({
-  turnTime,
-  setTurnTime,
-  poolTime,
-  setPoolTime,
+  p1TurnTime: p1TurnTime,
+  setP1TurnTime: setP1TurnTime,
+  p1PoolTime: p1PoolTime,
+  setP1PoolTime: setP1PoolTime,
+  p2TurnTime: p2TurnTime,
+  setP2TurnTime: setP2TurnTime,
+  p2PoolTime: p2PoolTime,
+  setP2PoolTime: setP2PoolTime,
 }: SettingsPageProps) {
   const navigate = useNavigate();
 
   // Convert ms to h/m/s
-  const turnHours = Math.floor(turnTime / 3600000);
-  const turnMinutes = Math.floor((turnTime % 3600000) / 60000);
-  const turnSeconds = Math.floor((turnTime % 60000) / 1000);
+  const p1TurnHours = Math.floor(p1TurnTime / 3600000);
+  const p1TurnMinutes = Math.floor((p1TurnTime % 3600000) / 60000);
+  const p1TurnSeconds = Math.floor((p1TurnTime % 60000) / 1000);
 
-  const poolHours = Math.floor(poolTime / 3600000);
-  const poolMinutes = Math.floor((poolTime % 3600000) / 60000);
-  const poolSeconds = Math.floor((poolTime % 60000) / 1000);
+  const p1PoolHours = Math.floor(p1PoolTime / 3600000);
+  const p1PoolMinutes = Math.floor((p1PoolTime % 3600000) / 60000);
+  const p1PoolSeconds = Math.floor((p1PoolTime % 60000) / 1000);
 
-  const [tH, setTH] = useState(turnHours);
-  const [tM, setTM] = useState(turnMinutes);
-  const [tS, setTS] = useState(turnSeconds);
+  const p2TurnHours = Math.floor(p2TurnTime / 3600000);
+  const p2TurnMinutes = Math.floor((p2TurnTime % 3600000) / 60000);
+  const p2TurnSeconds = Math.floor((p2TurnTime % 60000) / 1000);
 
-  const [pH, setPH] = useState(poolHours);
-  const [pM, setPM] = useState(poolMinutes);
-  const [pS, setPS] = useState(poolSeconds);
+  const p2PoolHours = Math.floor(p2PoolTime / 3600000);
+  const p2PoolMinutes = Math.floor((p2PoolTime % 3600000) / 60000);
+  const p2PoolSeconds = Math.floor((p2PoolTime % 60000) / 1000);
+
+  const [p1tH, setP1TH] = useState(p1TurnHours);
+  const [p1tM, setP1TM] = useState(p1TurnMinutes);
+  const [p1tS, setP1TS] = useState(p1TurnSeconds);
+
+  const [p1PH, setP1PH] = useState(p1PoolHours);
+  const [p1PM, setP1PM] = useState(p1PoolMinutes);
+  const [p1PS, setP1PS] = useState(p1PoolSeconds);
+
+  const [p2tH, setP2TH] = useState(p2TurnHours);
+  const [p2tM, setP2TM] = useState(p2TurnMinutes);
+  const [p2tS, setP2TS] = useState(p2TurnSeconds);
+
+  const [p2PH, setP2PH] = useState(p2PoolHours);
+  const [p2PM, setP2PM] = useState(p2PoolMinutes);
+  const [p2PS, setP2PS] = useState(p2PoolSeconds);
 
   const handleSave = () => {
-    setTurnTime((tH * 3600 + tM * 60 + tS) * 1000);
-    setPoolTime((pH * 3600 + pM * 60 + pS) * 1000);
+    setP1TurnTime((p1tH * 3600 + p1tM * 60 + p1tS) * 1000);
+    setP1PoolTime((p1PH * 3600 + p1PM * 60 + p1PS) * 1000);
+    setP2TurnTime((p2tH * 3600 + p2tM * 60 + p2tS) * 1000);
+    setP2PoolTime((p2PH * 3600 + p2PM * 60 + p2PS) * 1000);
     navigate('/');
   };
 
@@ -103,18 +129,36 @@ export default function SettingsPage({
       <Section>
         <SectionTitle>Turn Time</SectionTitle>
         <InputRow>
-          <input type="number" value={tH} min={0} onFocus={e => e.target.select()} onChange={e => setTH(Number(e.target.value))} /> h
-          <input type="number" value={tM} min={0} max={59} onFocus={e => e.target.select()} onChange={e => setTM(Number(e.target.value))} /> m
-          <input type="number" value={tS} min={0} max={59}  onFocus={e => e.target.select()}onChange={e => setTS(Number(e.target.value))} /> s
+          <input type="number" value={p1tH} min={0} onFocus={e => e.target.select()} onChange={e => setP1TH(Number(e.target.value))} /> h
+          <input type="number" value={p1tM} min={0} max={59} onFocus={e => e.target.select()} onChange={e => setP1TM(Number(e.target.value))} /> m
+          <input type="number" value={p1tS} min={0} max={59}  onFocus={e => e.target.select()}onChange={e => setP1TS(Number(e.target.value))} /> s
         </InputRow>
       </Section>
 
       <Section>
         <SectionTitle>Pool Time</SectionTitle>
         <InputRow>
-          <input type="number" value={pH} min={0} onFocus={e => e.target.select()} onChange={e => setPH(Number(e.target.value))} /> h
-          <input type="number" value={pM} min={0} max={59} onFocus={e => e.target.select()} onChange={e => setPM(Number(e.target.value))} /> m
-          <input type="number" value={pS} min={0} max={59} onFocus={e => e.target.select()} onChange={e => setPS(Number(e.target.value))} /> s
+          <input type="number" value={p1PH} min={0} onFocus={e => e.target.select()} onChange={e => setP1PH(Number(e.target.value))} /> h
+          <input type="number" value={p1PM} min={0} max={59} onFocus={e => e.target.select()} onChange={e => setP1PM(Number(e.target.value))} /> m
+          <input type="number" value={p1PS} min={0} max={59} onFocus={e => e.target.select()} onChange={e => setP1PS(Number(e.target.value))} /> s
+        </InputRow>
+      </Section>
+
+      <Section>
+        <SectionTitle>P2 Turn Time</SectionTitle>
+        <InputRow>
+          <input type="number" value={p2tH} min={0} onFocus={e => e.target.select()} onChange={e => setP2TH(Number(e.target.value))} /> h
+          <input type="number" value={p2tM} min={0} max={59} onFocus={e => e.target.select()} onChange={e => setP2TM(Number(e.target.value))} /> m
+          <input type="number" value={p2tS} min={0} max={59}  onFocus={e => e.target.select()}onChange={e => setP2TS(Number(e.target.value))} /> s
+        </InputRow>
+      </Section>
+
+      <Section>
+        <SectionTitle>P2 Pool Time</SectionTitle>
+        <InputRow>
+          <input type="number" value={p2PH} min={0} onFocus={e => e.target.select()} onChange={e => setP2PH(Number(e.target.value))} /> h
+          <input type="number" value={p2PM} min={0} max={59} onFocus={e => e.target.select()} onChange={e => setP2PM(Number(e.target.value))} /> m
+          <input type="number" value={p2PS} min={0} max={59} onFocus={e => e.target.select()} onChange={e => setP2PS(Number(e.target.value))} /> s
         </InputRow>
       </Section>
 

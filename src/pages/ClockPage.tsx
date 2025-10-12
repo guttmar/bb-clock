@@ -5,11 +5,13 @@ import useWakeLock from '../hooks/useWakeLock';
 import { useNavigate } from 'react-router-dom';
 
 interface ClockPageProps {
-  turnTime: number;
-  poolTime: number;
+  p1TurnTime: number;
+  p1PoolTime: number;
+  p2TurnTime: number;
+  p2PoolTime: number;
 }
 
-export default function ClockPage({ turnTime, poolTime }: ClockPageProps) {
+export default function ClockPage({ p1TurnTime: p1TurnTime, p1PoolTime: p1PoolTime, p2TurnTime: p2TurnTime, p2PoolTime: p2PoolTime }: ClockPageProps) {
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [reset, setReset] = React.useState(false);
   const [isPlayerOne, setIsPlayerOne] = React.useState(true);
@@ -45,8 +47,8 @@ export default function ClockPage({ turnTime, poolTime }: ClockPageProps) {
         reset={reset}
         flipped={true}
         onClick={handlePlayerOneClick}
-        turnTime={turnTime}
-        poolTime={poolTime}
+        turnTime={p1TurnTime}
+        poolTime={p1PoolTime}
       />
       <NavBar
         isPlaying={isPlaying}
@@ -58,8 +60,8 @@ export default function ClockPage({ turnTime, poolTime }: ClockPageProps) {
         active={!isPlayerOne && isPlaying}
         reset={reset}
         onClick={handlePlayerTwoClick}
-        turnTime={turnTime}
-        poolTime={poolTime}
+        turnTime={p2TurnTime}
+        poolTime={p2PoolTime}
       />
     </div>
   );
