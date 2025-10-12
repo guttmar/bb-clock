@@ -103,18 +103,18 @@ export default function SettingsPage({
       <Section>
         <SectionTitle>Turn Time</SectionTitle>
         <InputRow>
-          <input type="number" value={tH} min={0} onChange={e => setTH(Number(e.target.value))} /> h
-          <input type="number" value={tM} min={0} max={59} onChange={e => setTM(Number(e.target.value))} /> m
-          <input type="number" value={tS} min={0} max={59} onChange={e => setTS(Number(e.target.value))} /> s
+          <input type="number" value={tH} min={0} onFocus={e => e.target.select()} onChange={e => setTH(Number(e.target.value))} /> h
+          <input type="number" value={tM} min={0} max={59} onFocus={e => e.target.select()} onChange={e => setTM(Number(e.target.value))} /> m
+          <input type="number" value={tS} min={0} max={59}  onFocus={e => e.target.select()}onChange={e => setTS(Number(e.target.value))} /> s
         </InputRow>
       </Section>
 
       <Section>
         <SectionTitle>Pool Time</SectionTitle>
         <InputRow>
-          <input type="number" value={pH} min={0} onChange={e => setPH(Number(e.target.value))} /> h
-          <input type="number" value={pM} min={0} max={59} onChange={e => setPM(Number(e.target.value))} /> m
-          <input type="number" value={pS} min={0} max={59} onChange={e => setPS(Number(e.target.value))} /> s
+          <input type="number" value={pH} min={0} onFocus={e => e.target.select()} onChange={e => setPH(Number(e.target.value))} /> h
+          <input type="number" value={pM} min={0} max={59} onFocus={e => e.target.select()} onChange={e => setPM(Number(e.target.value))} /> m
+          <input type="number" value={pS} min={0} max={59} onFocus={e => e.target.select()} onChange={e => setPS(Number(e.target.value))} /> s
         </InputRow>
       </Section>
 
