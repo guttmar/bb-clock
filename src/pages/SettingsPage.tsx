@@ -134,7 +134,14 @@ export default function SettingsPage({
             value={p1tH}
             min={0}
             onFocus={(e) => e.target.select()}
-            onChange={(e) => setP1TH(Number(e.target.value))}
+            onChange={(e) => {
+              const v = e.target.value;
+              if (v === "") setP1TH(NaN);
+              else setP1TH(Number(v));
+            }}
+            onBlur={(e) => {
+              if (e.target.value === "" || isNaN(p1tH)) setP1TH(0);
+            }}
           />{" "}
           h
           <input
@@ -143,7 +150,14 @@ export default function SettingsPage({
             min={0}
             max={59}
             onFocus={(e) => e.target.select()}
-            onChange={(e) => setP1TM(Number(e.target.value))}
+            onChange={(e) => {
+              const v = e.target.value;
+              if (v === "") setP1TM(NaN);
+              else setP1TM(Number(v));
+            }}
+            onBlur={(e) => {
+              if (e.target.value === "" || isNaN(p1tM)) setP1TM(0);
+            }}
           />{" "}
           m
           <input
@@ -152,7 +166,14 @@ export default function SettingsPage({
             min={0}
             max={59}
             onFocus={(e) => e.target.select()}
-            onChange={(e) => setP1TS(Number(e.target.value))}
+            onChange={(e) => {
+              const v = e.target.value;
+              if (v === "") setP1TS(NaN);
+              else setP1TS(Number(v));
+            }}
+            onBlur={(e) => {
+              if (e.target.value === "" || isNaN(p1tS)) setP1TS(0);
+            }}
           />{" "}
           s
         </InputRow>
@@ -166,7 +187,14 @@ export default function SettingsPage({
             value={p1PH}
             min={0}
             onFocus={(e) => e.target.select()}
-            onChange={(e) => setP1PH(Number(e.target.value))}
+            onChange={(e) => {
+              const v = e.target.value;
+              if (v === "") setP1PH(NaN);
+              else setP1PH(Number(v));
+            }}
+            onBlur={(e) => {
+              if (e.target.value === "" || isNaN(p1PH)) setP1PH(0);
+            }}
           />{" "}
           h
           <input
@@ -175,7 +203,14 @@ export default function SettingsPage({
             min={0}
             max={59}
             onFocus={(e) => e.target.select()}
-            onChange={(e) => setP1PM(Number(e.target.value))}
+            onChange={(e) => {
+              const v = e.target.value;
+              if (v === "") setP1PM(NaN);
+              else setP1PM(Number(v));
+            }}
+            onBlur={(e) => {
+              if (e.target.value === "" || isNaN(p1PM)) setP1PM(0);
+            }}
           />{" "}
           m
           <input
@@ -184,7 +219,14 @@ export default function SettingsPage({
             min={0}
             max={59}
             onFocus={(e) => e.target.select()}
-            onChange={(e) => setP1PS(Number(e.target.value))}
+            onChange={(e) => {
+              const v = e.target.value;
+              if (v === "") setP1PS(NaN);
+              else setP1PS(Number(v));
+            }}
+            onBlur={(e) => {
+              if (e.target.value === "" || isNaN(p1PS)) setP1PS(0);
+            }}
           />{" "}
           s
         </InputRow>
@@ -198,7 +240,14 @@ export default function SettingsPage({
             value={p2tH}
             min={0}
             onFocus={(e) => e.target.select()}
-            onChange={(e) => setP2TH(Number(e.target.value))}
+            onChange={(e) => {
+              const v = e.target.value;
+              if (v === "") setP2TH(NaN);
+              else setP2TH(Number(v));
+            }}
+            onBlur={(e) => {
+              if (e.target.value === "" || isNaN(p2tH)) setP2TH(0);
+            }}
           />{" "}
           h
           <input
@@ -207,7 +256,14 @@ export default function SettingsPage({
             min={0}
             max={59}
             onFocus={(e) => e.target.select()}
-            onChange={(e) => setP2TM(Number(e.target.value))}
+            onChange={(e) => {
+              const v = e.target.value;
+              if (v === "") setP2TM(NaN);
+              else setP2TM(Number(v));
+            }}
+            onBlur={(e) => {
+              if (e.target.value === "" || isNaN(p2tM)) setP2TM(0);
+            }}
           />{" "}
           m
           <input
@@ -216,7 +272,14 @@ export default function SettingsPage({
             min={0}
             max={59}
             onFocus={(e) => e.target.select()}
-            onChange={(e) => setP2TS(Number(e.target.value))}
+            onChange={(e) => {
+              const v = e.target.value;
+              if (v === "") setP2TS(NaN);
+              else setP2TS(Number(v));
+            }}
+            onBlur={(e) => {
+              if (e.target.value === "" || isNaN(p2tS)) setP2TS(0);
+            }}
           />{" "}
           s
         </InputRow>
@@ -230,7 +293,14 @@ export default function SettingsPage({
             value={p2PH}
             min={0}
             onFocus={(e) => e.target.select()}
-            onChange={(e) => setP2PH(Number(e.target.value))}
+            onChange={(e) => {
+              const v = e.target.value;
+              if (v === "") setP2PH(NaN);
+              else setP2PH(Number(v));
+            }}
+            onBlur={(e) => {
+              if (e.target.value === "" || isNaN(p2PH)) setP2PH(0);
+            }}
           />{" "}
           h
           <input
@@ -239,7 +309,14 @@ export default function SettingsPage({
             min={0}
             max={59}
             onFocus={(e) => e.target.select()}
-            onChange={(e) => setP2PM(Number(e.target.value))}
+            onChange={(e) => {
+              const v = e.target.value;
+              if (v === "") setP2PM(NaN);
+              else setP2PM(Number(v));
+            }}
+            onBlur={(e) => {
+              if (e.target.value === "" || isNaN(p2PM)) setP2PM(0);
+            }}
           />{" "}
           m
           <input
@@ -248,7 +325,14 @@ export default function SettingsPage({
             min={0}
             max={59}
             onFocus={(e) => e.target.select()}
-            onChange={(e) => setP2PS(Number(e.target.value))}
+            onChange={(e) => {
+              const v = e.target.value;
+              if (v === "") setP2PS(NaN);
+              else setP2PS(Number(v));
+            }}
+            onBlur={(e) => {
+              if (e.target.value === "" || isNaN(p2PS)) setP2PS(0);
+            }}
           />{" "}
           s
         </InputRow>
