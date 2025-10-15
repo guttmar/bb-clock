@@ -26,6 +26,12 @@ export default function ClockPage({
 
   const navigate = useNavigate();
 
+  React.useEffect(() => {
+    if (reset) {
+      setReset(false);
+    }
+  }, [reset]);
+
   const handleReset = () => {
     setReset(true);
     setIsPlaying(false);
