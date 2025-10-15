@@ -111,6 +111,18 @@ export default function PlayerClock({
   const prevPoolMsRef = React.useRef<number>(poolTime);
 
   React.useEffect(() => {
+    function signalPool() {
+      poolAudioRef.current?.play().catch(console.warn);
+      navigator.vibrate?.(100);
+      triggerAnimation("subtle");
+    }
+
+    function signalTurnover() {
+      turnoverAudioRef.current?.play().catch(console.warn);
+      navigator.vibrate?.([100, 50, 100, 50, 100]);
+      triggerAnimation("strong");
+    }
+
     const turnJustHitZero = prevTurnMsRef.current > 0 && displayTurnMs === 0;
     const poolJustHitZero = prevPoolMsRef.current > 0 && displayPoolMs === 0;
 
@@ -178,7 +190,7 @@ export default function PlayerClock({
     const seconds = totalSeconds % 60;
     const tenths = Math.floor((ms % 1000) / 100);
 
-    let parts: string[] = [];
+    const parts: string[] = [];
     if (hours > 0) parts.push(hours.toString().padStart(2, "0"));
     if (hours > 0 || minutes > 0)
       parts.push(minutes.toString().padStart(2, "0"));
@@ -194,18 +206,6 @@ export default function PlayerClock({
   function triggerAnimation(type: "subtle" | "strong") {
     setAnimationType(type);
     setTimeout(() => setAnimationType(null), 1200); // reset after animation
-  }
-
-  function signalPool() {
-    poolAudioRef.current?.play().catch(console.warn);
-    navigator.vibrate?.(100);
-    triggerAnimation("subtle");
-  }
-
-  function signalTurnover() {
-    turnoverAudioRef.current?.play().catch(console.warn);
-    navigator.vibrate?.([100, 50, 100, 50, 100]);
-    triggerAnimation("strong");
   }
 
   return (
