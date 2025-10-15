@@ -14,6 +14,7 @@ export default defineConfig({
         short_name: 'bb-clock',
         description: 'Game clock for Blood Bowl or similar games where you have a turn timer and a game time pool as backup.',
         theme_color: '#457200ff',
+        display: 'fullscreen',
         icons: [
           {
             src: 'pwa-192x192.png',
