@@ -3,6 +3,7 @@ import NavBar from "../components/NavBar";
 import PlayerClock from "../components/PlayerClock";
 import useWakeLock from "../hooks/useWakeLock";
 import { useNavigate } from "react-router-dom";
+import UpdateBanner from "../components/UpdateBanner";
 
 interface ClockPageProps {
   p1TurnTime: number;
@@ -47,6 +48,7 @@ export default function ClockPage({
 
   return (
     <div className="flex flex-col justify-center h-full w-full">
+      <UpdateBanner />
       <PlayerClock
         active={isPlayerOne && isPlaying}
         reset={reset}
