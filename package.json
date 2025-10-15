@@ -2,7 +2,7 @@
   "name": "bb-clock",
   "homepage": "https://guttmar.github.io/bb-clock",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
