@@ -43,9 +43,11 @@ const ClockButton = styled.button<{
   border-radius: 0.5rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   transition: background 0.3s;
+  font-size: 2.5rem;
+  text-align: center;
 
-  ${(props) =>
-    props.active
+  ${(p) =>
+    p.active
       ? css`
           background: #22c55e;
           color: #fff;
@@ -55,26 +57,22 @@ const ClockButton = styled.button<{
           color: #e5e7eb;
         `}
 
-  ${(props) =>
-    props.flipped &&
+  ${(p) =>
+    p.flipped &&
     css`
       transform: rotate(180deg);
     `}
 
-  ${(props) =>
-    props.animationType === "subtle" &&
+  ${(p) =>
+    p.animationType === "subtle" &&
     css`
       animation: ${subtleFlash} 0.8s ease;
     `}
-    
-  ${(props) =>
-    props.animationType === "strong" &&
+  ${(p) =>
+    p.animationType === "strong" &&
     css`
       animation: ${strongFlash} 1.2s ease;
     `}
-
-  font-size: 2.5rem;
-  text-align: center;
 `;
 
 const PoolTime = styled.span`
@@ -82,7 +80,7 @@ const PoolTime = styled.span`
   opacity: 0.7;
 `;
 
-export default function PlayerClock({
+function PlayerClock({
   active,
   flipped,
   onClick,
@@ -90,123 +88,102 @@ export default function PlayerClock({
   poolTime,
   reset,
 }: PlayerClockProps) {
-  const [displayTurnMs, setDisplayTurnMs] = React.useState(turnTime);
-  const [displayPoolMs, setDisplayPoolMs] = React.useState(poolTime);
+  const turnRef = React.useRef(turnTime);
+  const poolRef = React.useRef(poolTime);
+  const lastRenderRef = React.useRef(0);
+  const [, forceRender] = React.useReducer((x) => x + 1, 0);
+  const frameRef = React.useRef<number | null>(null);
 
-  const intervalRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
-  const lastTickRef = React.useRef<number | null>(null);
+  const poolAudio = React.useMemo(() => new Audio(poolStartSoundFile), []);
+  const turnoverAudio = React.useMemo(() => new Audio(turnoverSoundFile), []);
 
-  const poolAudioRef = React.useRef<HTMLAudioElement | null>(null);
-  const turnoverAudioRef = React.useRef<HTMLAudioElement | null>(null);
-
-  React.useEffect(() => {
-    poolAudioRef.current = new Audio(poolStartSoundFile);
-  }, []);
-
-  React.useEffect(() => {
-    turnoverAudioRef.current = new Audio(turnoverSoundFile);
-  }, []);
-
-  const prevTurnMsRef = React.useRef<number>(turnTime);
-  const prevPoolMsRef = React.useRef<number>(poolTime);
-
-  React.useEffect(() => {
-    function signalPool() {
-      poolAudioRef.current?.play().catch(console.warn);
-      navigator.vibrate?.(100);
-      triggerAnimation("subtle");
-    }
-
-    function signalTurnover() {
-      turnoverAudioRef.current?.play().catch(console.warn);
-      navigator.vibrate?.([100, 50, 100, 50, 100]);
-      triggerAnimation("strong");
-    }
-
-    const turnJustHitZero = prevTurnMsRef.current > 0 && displayTurnMs === 0;
-    const poolJustHitZero = prevPoolMsRef.current > 0 && displayPoolMs === 0;
-
-    if (turnJustHitZero) {
-      if (displayPoolMs > 0) {
-        signalPool();
-      } else {
-        signalTurnover();
-      }
-    } else if (poolJustHitZero && displayTurnMs === 0) {
-      signalTurnover();
-    }
-
-    prevTurnMsRef.current = displayTurnMs;
-    prevPoolMsRef.current = displayPoolMs;
-  }, [displayTurnMs, displayPoolMs]);
-
-  React.useEffect(() => {
-    setDisplayTurnMs(turnTime);
-    setDisplayPoolMs(poolTime);
-  }, [reset, turnTime, poolTime]);
-
-  // Start/stop timer
-  React.useEffect(() => {
-    if (active && !intervalRef.current) {
-      lastTickRef.current = Date.now();
-      intervalRef.current = setInterval(() => {
-        if (!lastTickRef.current) return;
-        const now = Date.now();
-        const delta = now - lastTickRef.current;
-        lastTickRef.current = now;
-
-        setDisplayTurnMs((prev) => {
-          if (prev > 0) return Math.max(prev - delta, 0);
-          setDisplayPoolMs((poolPrev) => Math.max(poolPrev - delta, 0));
-          return 0;
-        });
-      }, 100);
-    } else if (!active && intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [active]);
-
-  // Reset timer
-  React.useEffect(() => {
-    setDisplayTurnMs(turnTime);
-    setDisplayPoolMs(poolTime);
-  }, [reset, turnTime, poolTime]);
-
-  const handleClick = () => {
-    setDisplayTurnMs(turnTime);
-    lastTickRef.current = Date.now();
-    onClick?.();
-  };
-
-  const formatTime = (ms: number) => {
-    const totalSeconds = Math.floor(ms / 1000);
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-    const tenths = Math.floor((ms % 1000) / 100);
-
-    const parts: string[] = [];
-    if (hours > 0) parts.push(hours.toString().padStart(2, "0"));
-    if (hours > 0 || minutes > 0)
-      parts.push(minutes.toString().padStart(2, "0"));
-    parts.push(seconds.toString() + "." + tenths);
-
-    return parts.join(":");
-  };
-
+  const prevTurnRef = React.useRef(turnTime);
+  const prevPoolRef = React.useRef(poolTime);
   const [animationType, setAnimationType] = React.useState<
     "subtle" | "strong" | null
   >(null);
 
-  function triggerAnimation(type: "subtle" | "strong") {
+  const triggerAnimation = React.useCallback((type: "subtle" | "strong") => {
     setAnimationType(type);
-    setTimeout(() => setAnimationType(null), 1200); // reset after animation
-  }
+    setTimeout(() => setAnimationType(null), 1200);
+  }, []);
+
+  React.useEffect(() => {
+    if (!active) return;
+    let last = Date.now();
+
+    const loop = () => {
+      const now = Date.now();
+      const delta = now - last;
+      last = now;
+
+      if (turnRef.current > 0) {
+        turnRef.current = Math.max(turnRef.current - delta, 0);
+      } else {
+        poolRef.current = Math.max(poolRef.current - delta, 0);
+      }
+
+      const turnJustHitZero =
+        prevTurnRef.current > 0 && turnRef.current === 0;
+      const poolJustHitZero =
+        prevPoolRef.current > 0 && poolRef.current === 0;
+
+      if (turnJustHitZero) {
+        if (poolRef.current > 0) {
+          poolAudio.play().catch(console.warn);
+          navigator.vibrate?.(100);
+          triggerAnimation("subtle");
+        } else {
+          turnoverAudio.play().catch(console.warn);
+          navigator.vibrate?.([100, 50, 100, 50, 100]);
+          triggerAnimation("strong");
+        }
+      } else if (poolJustHitZero && turnRef.current === 0) {
+        turnoverAudio.play().catch(console.warn);
+        navigator.vibrate?.([100, 50, 100, 50, 100]);
+        triggerAnimation("strong");
+      }
+
+      prevTurnRef.current = turnRef.current;
+      prevPoolRef.current = poolRef.current;
+
+      if (now - lastRenderRef.current > 50) {
+        lastRenderRef.current = now;
+        forceRender();
+      }
+
+      frameRef.current = requestAnimationFrame(loop);
+    };
+
+    frameRef.current = requestAnimationFrame(loop);
+    return () => {
+      if (frameRef.current) cancelAnimationFrame(frameRef.current);
+      frameRef.current = null;
+    };
+  }, [active, poolAudio, turnoverAudio, triggerAnimation]);
+
+  // reset timers when props change
+  React.useEffect(() => {
+    turnRef.current = turnTime;
+    poolRef.current = poolTime;
+    forceRender();
+  }, [reset, turnTime, poolTime]);
+
+  const handleClick = () => {
+    turnRef.current = turnTime;
+    forceRender();
+    onClick?.();
+  };
+
+  const formatTime = React.useCallback((ms: number) => {
+    const totalSeconds = Math.floor(ms / 1000);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    const tenths = Math.floor((ms % 1000) / 100);
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}.${tenths}`;
+  }, []);
 
   return (
     <ClockButton
@@ -215,8 +192,10 @@ export default function PlayerClock({
       onClick={handleClick}
       animationType={animationType}
     >
-      {formatTime(displayTurnMs)}
-      <PoolTime>({formatTime(displayPoolMs)})</PoolTime>
+      {formatTime(turnRef.current)}
+      <PoolTime>({formatTime(poolRef.current)})</PoolTime>
     </ClockButton>
   );
 }
+
+export default React.memo(PlayerClock);
